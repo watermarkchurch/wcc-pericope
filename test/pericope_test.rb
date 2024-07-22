@@ -6,6 +6,18 @@ class PericopeTest < Minitest::Test
     Pericope.max_letter = "d"
   end
 
+  describe "Pericope" do
+    it 'can parse an entire book' do
+      tests = {
+        "Genesis" => "Genesis",
+        "Ruth"    => "Ruth"
+      }
+
+      tests.each do |book, expected_pericope|
+        assert_equal expected_pericope, Pericope.parse_one(book).to_s, "Expected Pericope to parse the entire book of #{book}"
+      end
+    end
+  end
 
   context "quickly recognizes Bible references:" do
     context "BOOK_PATTERN" do
@@ -102,6 +114,20 @@ class PericopeTest < Minitest::Test
 
         tests.each do |input, book|
           assert_equal book, Pericope("#{input} 1").book, "Expected Pericope to be able to identify \"#{input}\" as book ##{book}"
+        end
+      end
+
+      should "return an integer identifying the book of the Bible when only the book name is given" do
+        tests = {
+          "Romans" => 45,  # Romans
+          "mark"   => 41,  # Mark
+          "ps"     => 19,  # Psalms
+          "jas"    => 59,  # James
+          "ex"     => 2,   # Exodus
+          "ma"     => 40 } # Matthew
+
+        tests.each do |input, book|
+          assert_equal book, Pericope("#{input}")&.book, "Expected Pericope to be able to identify \"#{input}\" as book ##{book}"
         end
       end
     end

@@ -140,6 +140,10 @@ class Pericope
       @_fragment_regexp ||= /^(?:(?<chapter>\d{1,3}):)?(?<verse>\d{1,3})?(?<letter>[#{letters}])?$/
     end
 
+    def book_regexp
+      @_book_regexp ||= /#{book_pattern}/i
+    end
+
   private
 
     def book_pattern
@@ -166,6 +170,8 @@ class Pericope
 private
 
   def well_formatted_reference(options={})
+    return nil if ranges.empty?
+
     verse_range_separator = options.fetch(:verse_range_separator, "–") # en-dash
     chapter_range_separator = options.fetch(:chapter_range_separator, "—") # em-dash
     verse_list_separator = options.fetch(:verse_list_separator, ", ")
