@@ -68,6 +68,10 @@ class Pericope
       match_all(text) do |attributes|
         return attributes
       end
+
+      match_book(text) do |attributes|
+        return attributes
+      end
       nil
     end
 

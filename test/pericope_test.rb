@@ -471,6 +471,17 @@ class PericopeTest < Minitest::Test
           assert_equal expected_pericope, Pericope.new(verses).ranges
         end
       end
+
+      should 'accept just book names' do
+        tests = {
+          "Genesis" => "Genesis",
+          "Ruth"    => "Ruth"
+        }
+
+        tests.each do |book, expected_pericope|
+          assert_equal expected_pericope, Pericope.new(book).to_s, "Expected Pericope to parse the entire book of #{book}"
+        end
+      end
     end
 
     context "#to_a" do
