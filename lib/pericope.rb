@@ -47,7 +47,7 @@ class Pericope
 
 
   def to_s(options={})
-    "#{book_name} #{well_formatted_reference(options)}"
+    ["#{book_name}", well_formatted_reference(options)].compact.join(" ")
   end
 
   def inspect

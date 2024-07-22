@@ -360,6 +360,10 @@ class PericopeTest < Minitest::Test
         assert_equal "John 1", Pericope.new("john 1").to_s(always_print_verse_range: false)
         assert_equal "John 1:1–51", Pericope.new("john 1").to_s(always_print_verse_range: true)
       end
+
+      should "work with just a book name" do
+        assert_equal "Genesis", Pericope("Genesis").to_s
+      end
     end
   end
 
