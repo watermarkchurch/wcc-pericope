@@ -23,6 +23,16 @@ class Pericope
           pericopes << pericope
         end
       end
+
+      match_book(text) do |attributes|
+        pericope = Pericope.new(attributes)
+        if block_given?
+          yield pericope
+        else
+          pericopes << pericope
+        end
+      end
+
       block_given? ? text : pericopes
     end
 
@@ -58,6 +68,10 @@ class Pericope
       match_all(text) do |attributes|
         return attributes
       end
+
+      match_book(text) do |attributes|
+        return attributes
+      end
       nil
     end
 
@@ -75,6 +89,19 @@ class Pericope
           :ranges => ranges
         }
 
+        yield attributes, match
+      end
+    end
+
+    def match_book(text)
+      text.scan(Pericope.book_regexp) do
+        match = Regexp.last_match
+        book = BOOK_IDS[match.captures.find_index(&:itself)]
+        attributes = {
+          :original_string => match.to_s,
+          :book => book,
+          :ranges => ''
+        }
         yield attributes, match
       end
     end
@@ -180,7 +207,6 @@ class Pericope
     end
   end
 
-
   BOOK_PATTERN = %r{\b(?:
       (?:(?:3|iii|third|3rd)\s*(?:
         (john|joh|jon|jhn|jh|jo|jn)
@@ -238,7 +264,7 @@ class Pericope
       (haggai|ha?gg?)|
       (zechariah?|ze?ch?)|
       (malachi|mal)|
-      (matthew|matt|mat|ma|mt)|
+      \b(matthew|matt|mat|ma|mt)\b|
       (mark|mrk|mk)|
       (luke|luk|lk|lu)|
       (john|joh|jon|jhn|jh|jo|jn)|
@@ -260,5 +286,4 @@ class Pericope
   BOOK_IDS = [ 64, 10, 12, 14, 63, 47, 53, 55, 61, 9, 11, 13, 62, 46, 52, 54, 60, 1, 2, 3, 4, 5, 6,  7, 8, 23, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 48, 49, 50, 51, 56, 57, 58, 59, 65, 66 ].freeze
 
   BOOK_NAMES = [nil, "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth", "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra", "Nehemiah", "Esther", "Job", "Psalm", "Proverbs", "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah", "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos", "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah", "Malachi", "Matthew", "Mark", "Luke", "John", "Acts", "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians", "Colossians", "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus", "Philemon", "Hebrews", "James", "1 Peter", "2 Peter", "1 John", "2 John", "3 John", "Jude", "Revelation"].freeze
-
 end

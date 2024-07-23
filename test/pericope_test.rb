@@ -6,6 +6,18 @@ class PericopeTest < Minitest::Test
     Pericope.max_letter = "d"
   end
 
+  describe "Pericope" do
+    it 'can parse an entire book' do
+      tests = {
+        "Genesis" => "Genesis",
+        "Ruth"    => "Ruth"
+      }
+
+      tests.each do |book, expected_pericope|
+        assert_equal expected_pericope, Pericope.parse_one(book).to_s, "Expected Pericope to parse the entire book of #{book}"
+      end
+    end
+  end
 
   context "quickly recognizes Bible references:" do
     context "BOOK_PATTERN" do
@@ -102,6 +114,20 @@ class PericopeTest < Minitest::Test
 
         tests.each do |input, book|
           assert_equal book, Pericope("#{input} 1").book, "Expected Pericope to be able to identify \"#{input}\" as book ##{book}"
+        end
+      end
+
+      should "return an integer identifying the book of the Bible when only the book name is given" do
+        tests = {
+          "Romans" => 45,  # Romans
+          "mark"   => 41,  # Mark
+          "ps"     => 19,  # Psalms
+          "jas"    => 59,  # James
+          "ex"     => 2,   # Exodus
+          "ma"     => 40 } # Matthew
+
+        tests.each do |input, book|
+          assert_equal book, Pericope("#{input}")&.book, "Expected Pericope to be able to identify \"#{input}\" as book ##{book}"
         end
       end
     end
@@ -334,6 +360,10 @@ class PericopeTest < Minitest::Test
         assert_equal "John 1", Pericope.new("john 1").to_s(always_print_verse_range: false)
         assert_equal "John 1:1–51", Pericope.new("john 1").to_s(always_print_verse_range: true)
       end
+
+      should "work with just a book name" do
+        assert_equal "Genesis", Pericope("Genesis").to_s
+      end
     end
   end
 
@@ -439,6 +469,17 @@ class PericopeTest < Minitest::Test
 
         tests.each do |(verses, expected_pericope)|
           assert_equal expected_pericope, Pericope.new(verses).ranges
+        end
+      end
+
+      should 'accept just book names' do
+        tests = {
+          "Genesis" => "Genesis",
+          "Ruth"    => "Ruth"
+        }
+
+        tests.each do |book, expected_pericope|
+          assert_equal expected_pericope, Pericope.new(book).to_s, "Expected Pericope to parse the entire book of #{book}"
         end
       end
     end
