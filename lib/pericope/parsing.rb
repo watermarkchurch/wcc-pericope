@@ -97,10 +97,13 @@ class Pericope
       text.scan(Pericope.book_regexp) do
         match = Regexp.last_match
         book = BOOK_IDS[match.captures.find_index(&:itself)]
+
+        ranges = parse_reference(book, '1-150')
+
         attributes = {
           :original_string => match.to_s,
           :book => book,
-          :ranges => ''
+          :ranges => ranges
         }
         yield attributes, match
       end

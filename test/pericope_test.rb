@@ -9,8 +9,8 @@ class PericopeTest < Minitest::Test
   describe "Pericope" do
     it 'can parse an entire book' do
       tests = {
-        "Genesis" => "Genesis",
-        "Ruth"    => "Ruth"
+        "Genesis" => "Genesis 1—50",
+        "Ruth"    => "Ruth 1—4"
       }
 
       tests.each do |book, expected_pericope|
@@ -362,7 +362,7 @@ class PericopeTest < Minitest::Test
       end
 
       should "work with just a book name" do
-        assert_equal "Genesis", Pericope("Genesis").to_s
+        assert_equal "Genesis 1—50", Pericope("Genesis").to_s
       end
     end
   end
@@ -474,8 +474,8 @@ class PericopeTest < Minitest::Test
 
       should 'accept just book names' do
         tests = {
-          "Genesis" => "Genesis",
-          "Ruth"    => "Ruth"
+          "Genesis" => "Genesis 1—50",
+          "Ruth"    => "Ruth 1—4"
         }
 
         tests.each do |book, expected_pericope|
